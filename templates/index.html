@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <section class="hero">
+        <h1>AI-Powered Resume Analyzer</h1>
+    </section>
+    <section class="hero1">
+        <h2>How to Use?</h2>
+        <p>Upload your resume, and let AI analyze your skills, strengths, and weaknesses. The system extracts key details from your resume and, if provided, compares them with a job description or a job posting URL. It identifies missing skills, evaluates job match percentage, and provides improvement suggestions, including formatting tips and relevant courses. Once the analysis is complete, you can easily copy the results to refine your resume for better job opportunities.</p>
+    </section>
+
+    <main>
+        <h2>Upload your Resume</h2>
+        <form id="resume-form" action="/" method="post" enctype="multipart/form-data">
+            <input type="file" name="resume" id="resume-input" required>
+            <p id="upload-message" class="success-message">{{ success_message }}</p>
+    
+            <textarea name="job_description" placeholder="Enter job description manually (optional)"></textarea>
+            <p>OR</p>
+            <input type="text" name="job_url" placeholder="Or paste LinkedIn job URL (optional)" id="job-url-input">
+            {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+            {% endif %}
+    
+            <button type="submit" id="analyze-button">Analyze</button>
+        </form>
+    
+        {% if analysis %}
+        <section class="results" id="results-container">
+            <h2>Analysis Result</h2>
+            <button id="copy-button">📋 Copy</button>
+            <div class="results-content">
+                <div id="analysis-text" class="scrollable-results">{{ analysis | safe }}</div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+    
+
+    <footer>
+        <p>all rights reserved @AI-Powered Resume Analyzer.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const resumeInput = document.getElementById("resume-input");
+    const uploadMessage = document.getElementById("upload-message");
+    const resultsContainer = document.getElementById("results-container");
+    const analyzeButton = document.getElementById("analyze-button");
+    const copyButton = document.getElementById("copy-button");
+    const analysisText = document.getElementById("analysis-text");
+
+    resumeInput.addEventListener("change", function () {
+        uploadMessage.innerText = "File Successfully Uploaded!";
+        if (resultsContainer) {
+            resultsContainer.style.display = "none";
+        }
+    });
+
+    document.getElementById("resume-form").addEventListener("submit", function () {
+        analyzeButton.innerText = "Analyzing...";
+    });
+
+    window.onload = function () {
+        analyzeButton.innerText = "Analyze";
+    };
+
+    if (copyButton && analysisText) {
+        copyButton.addEventListener("click", function () {
+            navigator.clipboard.writeText(analysisText.innerText).then(() => {
+                alert("Analysis copied to clipboard!");
+            });
+        });
+    }
+});
+
+    </script>
+
+</body>
+</html>
